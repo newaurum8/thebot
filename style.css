@@ -61,16 +61,15 @@ h2 { text-align: center; font-size: 1.8rem; margin: 15px 0; font-weight: 500; }
 .case-card .price { font-weight: 700; color: var(--gold-color); font-size: 1.1rem; }
 .case-buttons { display: flex; gap: 5px; margin-top: 5px; }
 .case-card .control-button { font-size: 1rem; padding: 5px 10px; }
-.roulette-wrapper { position: relative; width: 100%; height: 120px; /* УМЕНЬШИЛИ ВЫСОТУ */ background: var(--bg-main); border-radius: 10px; overflow: hidden; margin: 20px 0; touch-action: pan-y; }
+.roulette-wrapper { position: relative; width: 100%; height: 120px; background: var(--bg-main); border-radius: 10px; overflow: hidden; margin: 20px 0; touch-action: pan-y; }
 .roulette-pointer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 3px; height: 100%; background: var(--gold-color); z-index: 10; box-shadow: 0 0 10px var(--gold-color); }
-.roulette { display: flex; height: 100%; transition: transform 7s cubic-bezier(0.1, 0.1, 0.1, 1); }
-.result-item-display { min-height: 150px; display: flex; align-items: center; justify-content: center; }
+.roulette { display: flex; height: 100%; }
 
-/* --- Карточки предметов (ВАЖНО ДЛЯ РУЛЕТКИ) --- */
-.item-card { width: 110px; min-width: 110px; /* УМЕНЬШИЛИ ШИРИНУ */ height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 5px; background-position: center; background-size: cover; text-align: center; position: relative; }
+/* --- Карточки предметов --- */
+.item-card { width: 110px; min-width: 110px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 5px; background-position: center; background-size: cover; text-align: center; position: relative; }
 .item-card::before { content: ''; position: absolute; top:0; left:0; right: 0; bottom: 0; background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9) 100%); z-index: 1; }
 .item-card > * { z-index: 2; }
-.item-model, .item-image { display: block; width: 80px; height: 80px; /* УМЕНЬШИЛИ РАЗМЕР КАРТИНКИ */ object-fit: contain; margin-bottom: 5px; }
+.item-model, .item-image { display: block; width: 80px; height: 80px; object-fit: contain; margin-bottom: 5px; }
 .case-card .item-image { width: 100%; height: 100px; object-fit: contain; }
 .item-info { background: rgba(0,0,0,0.4); padding: 4px; border-radius: 5px; width: 100%; }
 .item-name { font-size: 0.9rem; font-weight: 500; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
@@ -80,7 +79,6 @@ h2 { text-align: center; font-size: 1.8rem; margin: 15px 0; font-weight: 500; }
 .inventory-container .item-card:hover { transform: translateY(-3px); box-shadow: 0 3px 10px rgba(0,0,0,0.4); }
 .inventory-container .item-card.selected { border-color: var(--gold-color); box-shadow: 0 0 15px var(--gold-color); }
 
-/* Цвета редкости */
 .item-card.common { background-image: radial-gradient(circle, var(--common-color) 0%, var(--bg-main) 70%); }
 .item-card.rare { background-image: radial-gradient(circle, var(--rare-color) 0%, var(--bg-main) 70%); }
 .item-card.epic { background-image: radial-gradient(circle, var(--epic-color) 0%, var(--bg-main) 70%); }
@@ -94,14 +92,7 @@ h2 { text-align: center; font-size: 1.8rem; margin: 15px 0; font-weight: 500; }
 .upgrade-controls { text-align: center; margin: 15px 0; }
 .upgrade-wheel-container { position: relative; width: 150px; height: 150px; margin: 0 auto 10px; }
 .upgrade-wheel-pointer { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 18px solid var(--gold-color); z-index: 2;}
-.upgrade-wheel { width: 100%; height: 100%; border-radius: 50%; background-color: var(--fail); background-image: conic-gradient(var(--success) 0deg, var(--fail) 0deg); border: 4px solid var(--bg-main); transition: transform 5s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.chance-display { font-size: 1.6rem; font-weight: 700; }
-.control-button { padding: 10px 15px; border: none; border-radius: 10px; font-size: 1.3rem; font-family: 'Teko', sans-serif; cursor: pointer; font-weight: 700; transition: all 0.2s; }
-#upgrade-button { width: 150px; margin-top: 10px;}
-#upgrade-button:disabled, .control-button:disabled { background-color: #555; color: #888; cursor: not-allowed; }
-.multipliers { display: flex; gap: 8px; margin-top: 15px; justify-content: center; }
-.multiplier-btn { width: 40px; height: 40px; border: 2px solid var(--text-secondary); background: none; color: var(--text-secondary); font-size: 1.2rem; border-radius: 5px; cursor: pointer; }
-.multiplier-btn.active { border-color: var(--gold-color); color: var(--gold-color); }
+.upgrade-wheel { width: 100%; height: 100%; border-radius: 50%; background-color: var(--fail); background-image: conic-gradient(var(--success) 0deg, var(--fail) 0deg); border: 4px solid var(--bg-main); }
 
 /* --- Страница Минёра --- */
 .game-instance-container { display: flex; flex-direction: column; gap: 20px; }
@@ -110,13 +101,34 @@ h2 { text-align: center; font-size: 1.8rem; margin: 15px 0; font-weight: 500; }
 .control-group label { display: block; font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 5px; }
 .control-group input { width: 100%; padding: 8px; background: var(--bg-main); border: 1px solid #444; color: white; font-family: 'Teko', sans-serif; font-size: 1.2rem; border-radius: 5px; }
 .mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; aspect-ratio: 1 / 1; margin: 0 auto; }
-.mine-cell { font-size: 1.5rem; }
+/* ИСПРАВЛЕНИЕ ЦВЕТА ФОНА В МИНЕРЕ */
+.mine-cell { 
+    font-size: 1.5rem; 
+    background-color: #2a2a3e; /* Явный цвет, чтобы отличаться от фона */
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s, transform 0.3s; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+.mine-cell:not(.revealed):hover { background-color: #4a4a6e; }
+.mine-cell.revealed.safe { background-color: var(--success); }
+.mine-cell.revealed.mine { background-color: var(--fail); animation: shake 0.5s; }
+@keyframes shake { 0%, 100% {transform: translateX(0);} 10%, 30%, 50%, 70%, 90% {transform: translateX(-5px);} 20%, 40%, 60%, 80% {transform: translateX(5px);} }
+
+
+/* --- Общие кнопки и контролы --- */
+.control-button { padding: 10px 15px; border: none; border-radius: 10px; font-size: 1.3rem; font-family: 'Teko', sans-serif; cursor: pointer; font-weight: 700; transition: all 0.2s; }
+#upgrade-button { width: 150px; margin-top: 10px;}
+#upgrade-button:disabled, .control-button:disabled { background-color: #555; color: #888; cursor: not-allowed; }
+.multipliers { display: flex; gap: 8px; margin-top: 15px; justify-content: center; }
+.multiplier-btn { width: 40px; height: 40px; border: 2px solid var(--text-secondary); background: none; color: var(--text-secondary); font-size: 1.2rem; border-radius: 5px; cursor: pointer; }
+.multiplier-btn.active { border-color: var(--gold-color); color: var(--gold-color); }
 
 /* --- Модальное окно и Уведомления --- */
 .toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); padding: 10px 20px; border-radius: 10px; color: white; font-size: 1.1rem; z-index: 2000; visibility: hidden; opacity: 0; transition: all 0.4s; }
 .toast.show { visibility: visible; opacity: 1; }
-.toast.success { background-color: var(--success); }
-.toast.fail { background-color: var(--fail); }
 .modal { display: none; position: fixed; z-index: 1500; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); }
 .modal-content { background-color: var(--bg-secondary); margin: 20% auto; padding: 15px; width: 90%; max-width: 500px; border-radius: 10px; position: relative; }
 .modal-close-button { color: #aaa; position: absolute; top: 5px; right: 15px; font-size: 30px; font-weight: bold; cursor: pointer; }

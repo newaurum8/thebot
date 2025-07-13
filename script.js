@@ -20,56 +20,24 @@ const ITEMS_DB = {
 
 const CASES_DB = [
     {
-        id: 'origin',
-        name: 'Origin Case',
-        price: 100,
-        image: 'images/case2.webp',
-        model: "",
-        contains: [
-            ITEMS_DB.g22_nest,
-            ITEMS_DB.ump45_beast,
-            ITEMS_DB.p350_forest,
-            ITEMS_DB.fabm_fatal,
-            ITEMS_DB.m60_grunge
-        ]
+        id: 'origin', name: 'Origin Case', price: 100, image: 'images/case2.webp', model: "",
+        contains: [ ITEMS_DB.g22_nest, ITEMS_DB.ump45_beast, ITEMS_DB.p350_forest, ITEMS_DB.fabm_fatal, ITEMS_DB.m60_grunge ]
     },
     {
-        id: 'furious',
-        name: 'Furious Case',
-        price: 500,
-        image: 'images/furios.webp',
-        model: '',
-        contains: [
-            ITEMS_DB.famas_monester,
-            ITEMS_DB.m16_seaglint,
-            ITEMS_DB.m4a1_impact,
-            ITEMS_DB.m16_ironwill
-        ]
+        id: 'furious', name: 'Furious Case', price: 500, image: 'images/furios.webp', model: '',
+        contains: [ ITEMS_DB.famas_monester, ITEMS_DB.m16_seaglint, ITEMS_DB.m4a1_impact, ITEMS_DB.m16_ironwill ]
     },
     {
-        id: 'legend',
-        name: 'Legend Case',
-        price: 2000,
-        image: 'images/legend.jpg',
-        model: '',
-        contains: [
-            ITEMS_DB.akr_carbon,
-            ITEMS_DB.awp_dragon,
-            ITEMS_DB.k_gold,
-            ITEMS_DB.gloves_furious,
-            ITEMS_DB.karambit_univers,
-            ITEMS_DB.dualdaggers_retrorade,
-            ITEMS_DB.mantis_eclips
-        ]
+        id: 'legend', name: 'Legend Case', price: 2000, image: 'images/legend.jpg', model: '',
+        contains: [ ITEMS_DB.akr_carbon, ITEMS_DB.awp_dragon, ITEMS_DB.k_gold, ITEMS_DB.gloves_furious, ITEMS_DB.karambit_univers, ITEMS_DB.dualdaggers_retrorade, ITEMS_DB.mantis_eclips ]
     }
 ];
 
 // --- ГЛАВНЫЙ СКРИПТ ПРИЛОЖЕНИЯ ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Адаптация под Telegram Web App
     if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand(); // Раскрываем приложение на весь экран
+        window.Telegram.WebApp.expand();
         document.body.style.setProperty('--tg-theme-bg-color', window.Telegram.WebApp.themeParams.bg_color);
         document.body.style.setProperty('--tg-theme-secondary-bg-color', window.Telegram.WebApp.themeParams.secondary_bg_color);
         document.body.style.setProperty('--tg-theme-text-color', window.Telegram.WebApp.themeParams.text_color);
@@ -80,26 +48,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultState = { balance: 10000, inventory: [], currentPage: 'page-cases', isSpinning: false, upgrade: { selectedItem: null, multiplier: null, targetItem: null, chance: 0, }, mines: { isActive: false, bet: 0, minesCount: 0, grid: [], revealedCount: 0, nextMultiplier: 0, currentWin: 0 }};
 
     const DOM = {
-        logo: document.querySelector('.logo'),
-        balanceEl: document.getElementById('balance-amount'),
-        pages: document.querySelectorAll('.page'),
-        navLinks: document.querySelectorAll('.nav-link'),
-        inventoryEl: document.getElementById('inventory'),
-        inventoryActionTextEl: document.getElementById('inventory-action-text'),
-        toastEl: document.getElementById('toast-notification'),
-        caseSelectionEl: document.getElementById('case-selection'),
-        rouletteEl: document.getElementById('roulette'),
-        resultItemEl: document.getElementById('result-item'),
-        modal: document.getElementById('modal-preview'),
-        modalCloseBtn: document.querySelector('.modal-close-button'),
-        modalCaseName: document.getElementById('modal-case-name'),
-        modalCaseItems: document.getElementById('modal-case-items'),
-        yourItemSlot: document.getElementById('your-item-slot'),
-        targetItemSlot: document.getElementById('target-item-slot'),
-        chanceDisplay: document.getElementById('upgrade-chance'),
-        upgradeButton: document.getElementById('upgrade-button'),
-        upgradeWheel: document.getElementById('upgrade-wheel'),
-        multipliersContainer: document.querySelector('.multipliers'),
+        logo: document.querySelector('.logo'), balanceEl: document.getElementById('balance-amount'),
+        pages: document.querySelectorAll('.page'), navLinks: document.querySelectorAll('.nav-link'),
+        inventoryEl: document.getElementById('inventory'), inventoryActionTextEl: document.getElementById('inventory-action-text'),
+        toastEl: document.getElementById('toast-notification'), caseSelectionEl: document.getElementById('case-selection'),
+        rouletteEl: document.getElementById('roulette'), resultItemEl: document.getElementById('result-item'),
+        modal: document.getElementById('modal-preview'), modalCloseBtn: document.querySelector('.modal-close-button'),
+        modalCaseName: document.getElementById('modal-case-name'), modalCaseItems: document.getElementById('modal-case-items'),
+        yourItemSlot: document.getElementById('your-item-slot'), targetItemSlot: document.getElementById('target-item-slot'),
+        chanceDisplay: document.getElementById('upgrade-chance'), upgradeButton: document.getElementById('upgrade-button'),
+        upgradeWheel: document.getElementById('upgrade-wheel'), multipliersContainer: document.querySelector('.multipliers'),
         minesGridEl: document.getElementById('mines-grid'),
     };
 
@@ -116,19 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
         DOM.balanceEl.textContent = Math.floor(state.balance);
         renderInventory();
         DOM.pages.forEach(p => p.classList.toggle('active', p.id === state.currentPage));
-        
-        DOM.navLinks.forEach(l => {
-            l.classList.toggle('active', l.dataset.page === state.currentPage);
-        });
-
-        const actionTextMap = { 
-            'page-cases': 'Нажмите на предмет, чтобы продать его.', 
-            'page-upgrade': 'Выберите предмет для апгрейда.', 
-            'page-game-mines': 'Ваши предметы.', 
-            'page-games-hub': 'Нажмите на предмет, чтобы продать его.'
-        };
+        DOM.navLinks.forEach(l => l.classList.toggle('active', l.dataset.page === state.currentPage));
+        const actionTextMap = { 'page-cases': 'Нажмите на предмет, чтобы продать его.', 'page-upgrade': 'Выберите предмет для апгрейда.', 'page-game-mines': 'Ваши предметы.', 'page-games-hub': 'Нажмите на предмет, чтобы продать его.' };
         DOM.inventoryActionTextEl.textContent = actionTextMap[state.currentPage] || actionTextMap['page-cases'];
-
         if (state.currentPage === 'page-cases') renderCases();
         if (state.currentPage === 'page-upgrade') renderUpgradePage();
         if (state.currentPage === 'page-game-mines') renderMinesGame();
@@ -137,10 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function createItemCard(item, context = {}) {
         const { isSlot, isInventory, inventoryIndex } = context;
         const selectedClass = isInventory && state.upgrade.selectedItem?.inventoryIndex === inventoryIndex ? 'selected' : '';
-        
-        // Теперь всегда используется <img>, так как model пустой
         const mediaElement = `<img src="${item.image}" alt="${item.name}" class="item-image" loading="lazy">`;
-
         return `<div class="item-card ${item.rarity || ''} ${selectedClass}" ${isInventory ? `data-inventory-index="${inventoryIndex}"` : ''}>
                     ${mediaElement}
                     <div class="item-info">
@@ -162,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!DOM.caseSelectionEl) return;
         DOM.caseSelectionEl.innerHTML = CASES_DB.map(c => {
             const caseMedia = `<img src="${c.image}" alt="${c.name}" class="item-image">`;
-
             return `<div class="case-card">
                         ${caseMedia}
                         <h3>${c.name}</h3>
@@ -178,12 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderUpgradePage() {
         if (state.upgrade.selectedItem) DOM.yourItemSlot.innerHTML = createItemCard(state.upgrade.selectedItem.item, { isSlot: true }); else DOM.yourItemSlot.innerHTML = '<p class="placeholder">Выберите скин</p>';
         if (state.upgrade.targetItem) DOM.targetItemSlot.innerHTML = createItemCard(state.upgrade.targetItem, { isSlot: true }); else DOM.targetItemSlot.innerHTML = '<p class="placeholder">Выберите множитель</p>';
-        
         const chancePercent = state.upgrade.chance.toFixed(2);
         DOM.chanceDisplay.textContent = `${chancePercent}%`;
         const successAngle = (chancePercent / 100) * 360;
         DOM.upgradeWheel.style.backgroundImage = `conic-gradient(var(--success) 0deg, var(--success) ${successAngle}deg, var(--fail) ${successAngle}deg, var(--fail) 360deg)`;
-
         DOM.upgradeButton.disabled = !state.upgrade.selectedItem || !state.upgrade.targetItem || state.isSpinning;
         DOM.multipliersContainer.querySelectorAll('.multiplier-btn').forEach(btn => btn.classList.remove('active'));
         if(state.upgrade.multiplier) { const activeBtn = DOM.multipliersContainer.querySelector(`[data-multiplier="${state.upgrade.multiplier}"]`); if (activeBtn) activeBtn.classList.add('active');}
@@ -210,11 +152,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('click', (e) => {
         const target = e.target.closest('button, .nav-link, .logo, .game-card, .item-card[data-inventory-index], .mine-cell:not(.revealed), .modal-close-button');
         if (!target) return;
-
         if (target.matches('.nav-link, .logo')) { e.preventDefault(); state.currentPage = target.dataset.page; resetAllGames(); render(); return; }
         if (target.matches('.game-card:not(.disabled)')) { state.currentPage = target.dataset.page; render(); return; }
         if (target.matches('.item-card[data-inventory-index]')) { handleInventoryClick(parseInt(target.dataset.inventoryIndex)); return; }
-        
         switch(target.dataset.caseId ? 'case-btn' : target.id) {
             case 'case-btn':
                 const caseId = target.dataset.caseId;
@@ -225,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'mines-start-button': startMinesGame(); break;
             case 'mines-cashout-button': cashoutMines(); break;
         }
-
         if (target.matches('.multiplier-btn')) { state.upgrade.multiplier = parseInt(target.dataset.multiplier); calculateUpgrade(); render(); }
         if (target.matches('.mine-cell')) { revealMineCell(parseInt(target.dataset.row), parseInt(target.dataset.col)); }
         if (target.matches('.modal-close-button')) { DOM.modal.style.display = "none"; }
@@ -237,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(isNaN(index)) return;
         const item = state.inventory[index];
         if (!item) return;
-
         if (state.currentPage === 'page-upgrade') {
             state.upgrade.selectedItem = { item, inventoryIndex: index };
             calculateUpgrade();
@@ -256,8 +194,9 @@ document.addEventListener('DOMContentLoaded', () => {
         state.isSpinning = true; state.balance -= selectedCase.price; render();
         
         const wonItem = selectedCase.contains[Math.floor(Math.random() * selectedCase.contains.length)];
-        let rouletteItems = Array(50).fill(0).map(() => selectedCase.contains[Math.floor(Math.random() * selectedCase.contains.length)]);
-        rouletteItems[45] = wonItem; // Приз будет ближе к концу
+        let rouletteItems = Array(200).fill(0).map(() => selectedCase.contains[Math.floor(Math.random() * selectedCase.contains.length)]);
+        const winning_index = 190;
+        rouletteItems[winning_index] = wonItem;
 
         DOM.rouletteEl.style.transition = 'none'; 
         DOM.rouletteEl.style.transform = 'translateX(0)';
@@ -265,9 +204,11 @@ document.addEventListener('DOMContentLoaded', () => {
         DOM.resultItemEl.innerHTML = '<p class="placeholder">Открываем...</p>';
 
         setTimeout(() => {
-            DOM.rouletteEl.style.transition = 'transform 7s cubic-bezier(0.1, 0, 0.1, 1)';
-            // Ширина одной карточки = 110px
-            const stopPosition = (45 * 110) - (DOM.rouletteEl.parentElement.offsetWidth / 2) + (110 / 2);
+            // *** ИЗМЕНЕНИЕ: ЕЩЕ МЕДЛЕННЕЕ ***
+            DOM.rouletteEl.style.transition = 'transform 18s cubic-bezier(0.25, 0.1, 0.25, 1.0)';
+            
+            const itemCardWidth = 110;
+            const stopPosition = (winning_index * itemCardWidth) - (DOM.rouletteEl.parentElement.offsetWidth / 2) + (itemCardWidth / 2);
             DOM.rouletteEl.style.transform = `translateX(-${stopPosition}px)`;
         }, 100);
 
@@ -278,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
             DOM.resultItemEl.innerHTML = createItemCard(wonItem); 
             saveState(); 
             render();
-        }, 7100);
+        }, 18100); // 18 секунд анимации + 100мс задержка
     }
     
     function showCasePreview(caseId) {
