@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>мини апка</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="logo" data-page="page-cases">Даня питух</div>
+        <nav class="navigation">
+            <a href="#cases" class="nav-link active" data-page="page-cases">КЕЙСЫ</a>
+            <a href="#games" class="nav-link" data-page="page-games-hub">ИГРЫ</a>
+        </nav>
+        <div class="balance">
+            <span id="balance-amount">0</span>
+            <span class="currency-icon"> G</span>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <main id="page-cases" class="page active">
+            <div id="case-selection" class="case-selection-container"></div>
+            <hr class="separator">
+            <div class="roulette-wrapper">
+                <div class="roulette-pointer"></div>
+                <div id="roulette" class="roulette"></div>
+            </div>
+            <div id="result-item" class="result-item-display"><p class="placeholder">Выберите и откройте кейс</p></div>
+        </main>
+        
+        <main id="page-games-hub" class="page">
+            <h2>Выберите режим</h2>
+            <div class="games-hub">
+                <div class="game-card" data-page="page-upgrade"><h3>Апгрейд</h3><p>Улучшай свои скины</p></div>
+                <div class="game-card" data-page="page-game-mines"><h3>Минёр</h3><p>Найди все алмазы</p></div>
+                <div class="game-card disabled"><h3>Краш</h3><p>Скоро...</p></div>
+                <div class="game-card disabled"><h3>Рулетка</h3><p>Скоро...</p></div>
+            </div>
+        </main>
+
+        <main id="page-upgrade" class="page">
+            <div class="upgrade-container">
+                <div class="upgrade-box"><h2>ВАШ СКИН</h2><div id="your-item-slot" class="upgrade-slot"><p class="placeholder">Выберите скин</p></div></div>
+                <div class="upgrade-controls">
+                    <div class="upgrade-wheel-container">
+                        <div class="upgrade-wheel-pointer"></div>
+                        <div id="upgrade-wheel" class="upgrade-wheel"></div>
+                    </div>
+                    <div id="upgrade-chance" class="chance-display">0%</div>
+                    <button id="upgrade-button" class="control-button" disabled>АПГРЕЙД</button>
+                    <div class="multipliers"><button class="multiplier-btn" data-multiplier="2">x2</button><button class="multiplier-btn" data-multiplier="5">x5</button><button class="multiplier-btn" data-multiplier="10">x10</button></div>
+                </div>
+                <div class="upgrade-box"><h2>ЖЕЛАЕМЫЙ СКИН</h2><div id="target-item-slot" class="upgrade-slot"><p class="placeholder">Выберите множитель</p></div></div>
+            </div>
+        </main>
+
+        <main id="page-game-mines" class="page">
+            <div class="game-instance-container">
+                <div class="game-controls-panel">
+                    <h3>Настройки игры</h3>
+                    <div class="control-group"><label for="bet-amount">Сумма ставки</label><input type="number" id="mines-bet-amount" value="100"></div>
+                    <div class="control-group"><label for="mines-count">Количество мин (3-24)</label><input type="number" id="mines-count" value="5" min="3" max="24"></div>
+                    <button id="mines-start-button" class="control-button">Начать игру</button>
+                    <div class="mines-info">
+                        <h4>Информация</h4>
+                        <p>Следующий множитель: <span id="mines-next-multiplier">x0.00</span></p>
+                        <p>Текущий выигрыш: <span id="mines-current-win">0</span> G</p>
+                        <button id="mines-cashout-button" class="control-button" disabled>Забрать выигрыш</button>
+                    </div>
+                </div>
+                <div class="game-field"><div id="mines-grid" class="mines-grid"></div></div>
+            </div>
+        </main>
+    </div>
+
+    <div class="inventory-section">
+        <hr class="separator">
+        <h2>ВАШ ИНВЕНТАРЬ</h2>
+        <p id="inventory-action-text">Нажмите на предмет, чтобы продать его.</p>
+        <div id="inventory" class="inventory-container"></div>
+    </div>
+    
+    <div id="modal-preview" class="modal">
+        <div class="modal-content">
+            <span class="modal-close-button">&times;</span>
+            <h2 id="modal-case-name">Содержимое кейса</h2>
+            <div id="modal-case-items" class="inventory-container"></div>
+        </div>
+    </div>
+
+    <div id="toast-notification" class="toast"></div>
+    <script src="script.js"></script>
+</body>
+</html>
