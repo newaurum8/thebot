@@ -1,6 +1,5 @@
-// --- БАЗЫ ДАННЫХ (с новыми ссылками на модели через CDN jsDelivr) ---
+// --- БАЗЫ ДАННЫХ (с вашими новыми названиями) ---
 const ITEMS_DB = {
-    // --- Старые предметы (3D) ---
     g22_nest: { id: 'g22_nest', name: "G22 'Nest'", rarity: 'common', price: 10, image: 'images/g22_nest.webp', model: '' },
     ump45_beast: { id: 'ump45_beast', name: "AKR Nano'", rarity: 'common', price: 12, image: 'images/akr_nano.webp', model: '' },
     p350_forest: { id: 'p350_forest', name: "FS Venom", rarity: 'rare', price: 55, image: 'images/fs.webp', model: '' },
@@ -8,8 +7,6 @@ const ITEMS_DB = {
     akr_carbon: { id: 'akr_carbon', name: "AKR Genesis", rarity: 'legendary', price: 520, image: 'images/akr_genesis.webp', model: '' },
     awp_dragon: { id: 'awp_dragon', name: "AWP 'Genesis'", rarity: 'legendary', price: 1800, image: 'images/awm_genesis.webp', model: '' },
     k_gold: { id: 'k_gold', name: "Karambit 'Gold'", rarity: 'legendary', price: 15000, image: 'images/kerambit_gold.webp', model: '' },
-
-    // --- НОВЫЕ ПРЕДМЕТЫ С ИЗОБРАЖЕНИЯМИ (WEBP) ---
     gloves_furious: { id: 'gloves_furious', name: "Gloves", rarity: 'legendary', price: 850, image: 'images/gloves.webp', model: '' },
     karambit_univers: { id: 'karambit_new', name: "Karambit Univers", rarity: 'legendary', price: 11000, image: 'images/karambit.webp', model: '' },
     dualdaggers_retrorade: { id: 'dual_berettas', name: "Dual Daggers Retrorade", rarity: 'legendary', price: 500, image: 'images/dual.webp', model: '' },
@@ -20,8 +17,6 @@ const ITEMS_DB = {
     m16_ironwill: { id: 'p90_venom', name: "M16 Ironwill", rarity: 'epic', price: 550, image: 'images/weapon1.webp', model: '' },
     mantis_eclips: { id: 'tec9_decal', name: "Mantis Eclips", rarity: 'legendary', price: 3333, image: 'images/weapon2.webp', model: '' }
 };
-
-const DEFAULT_CASE_MODEL = 'https://cdn.jsdelivr.net/gh/TheMightyLukas/3d-models@main/case.glb';
 
 const CASES_DB = [
     {
@@ -35,7 +30,6 @@ const CASES_DB = [
             ITEMS_DB.ump45_beast,
             ITEMS_DB.p350_forest,
             ITEMS_DB.fabm_fatal,
-            ITEMS_DB.dualdaggers_retrorade,
             ITEMS_DB.m60_grunge
         ]
     },
@@ -46,7 +40,6 @@ const CASES_DB = [
         image: 'images/furios.webp',
         model: '',
         contains: [
-            ITEMS_DB.akr_carbon,
             ITEMS_DB.famas_monester,
             ITEMS_DB.m16_seaglint,
             ITEMS_DB.m4a1_impact,
@@ -60,10 +53,12 @@ const CASES_DB = [
         image: 'images/legend.jpg',
         model: '',
         contains: [
+            ITEMS_DB.akr_carbon,
             ITEMS_DB.awp_dragon,
             ITEMS_DB.k_gold,
             ITEMS_DB.gloves_furious,
             ITEMS_DB.karambit_univers,
+            ITEMS_DB.dualdaggers_retrorade,
             ITEMS_DB.mantis_eclips
         ]
     }
@@ -71,6 +66,16 @@ const CASES_DB = [
 
 // --- ГЛАВНЫЙ СКРИПТ ПРИЛОЖЕНИЯ ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Адаптация под Telegram Web App
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand(); // Раскрываем приложение на весь экран
+        document.body.style.setProperty('--tg-theme-bg-color', window.Telegram.WebApp.themeParams.bg_color);
+        document.body.style.setProperty('--tg-theme-secondary-bg-color', window.Telegram.WebApp.themeParams.secondary_bg_color);
+        document.body.style.setProperty('--tg-theme-text-color', window.Telegram.WebApp.themeParams.text_color);
+        document.body.style.setProperty('--tg-theme-hint-color', window.Telegram.WebApp.themeParams.hint_color);
+    }
+
     let state = {};
     const defaultState = { balance: 10000, inventory: [], currentPage: 'page-cases', isSpinning: false, upgrade: { selectedItem: null, multiplier: null, targetItem: null, chance: 0, }, mines: { isActive: false, bet: 0, minesCount: 0, grid: [], revealedCount: 0, nextMultiplier: 0, currentWin: 0 }};
 
@@ -98,7 +103,13 @@ document.addEventListener('DOMContentLoaded', () => {
         minesGridEl: document.getElementById('mines-grid'),
     };
 
-    function loadState() { const savedState = localStorage.getItem('csMoneyState'); state = savedState ? JSON.parse(savedState) : { ...defaultState }; state.currentPage = 'page-cases'; state.mines.isActive = false; state.isSpinning = false;}
+    function loadState() { 
+        const savedState = localStorage.getItem('csMoneyState'); 
+        state = savedState ? JSON.parse(savedState) : { ...defaultState }; 
+        state.currentPage = 'page-cases'; 
+        state.mines.isActive = false; 
+        state.isSpinning = false;
+    }
     function saveState() { localStorage.setItem('csMoneyState', JSON.stringify(state)); }
 
     function render() {
@@ -106,17 +117,17 @@ document.addEventListener('DOMContentLoaded', () => {
         renderInventory();
         DOM.pages.forEach(p => p.classList.toggle('active', p.id === state.currentPage));
         
-        const isGamePage = ['page-upgrade', 'page-game-mines', 'page-games-hub'].includes(state.currentPage);
         DOM.navLinks.forEach(l => {
-            const page = l.dataset.page;
-            l.classList.toggle('active', 
-                (page === state.currentPage && page !== 'page-games-hub') || 
-                (page === 'page-games-hub' && isGamePage)
-            );
+            l.classList.toggle('active', l.dataset.page === state.currentPage);
         });
 
-        const actionTextMap = { 'page-cases': 'Нажмите на предмет, чтобы продать его.', 'page-upgrade': 'Выберите предмет для апгрейда.', 'page-game-mines': 'Ваши предметы.', 'page-games-hub': 'Нажмите на предмет, чтобы продать его.'};
-        DOM.inventoryActionTextEl.textContent = actionTextMap[state.currentPage];
+        const actionTextMap = { 
+            'page-cases': 'Нажмите на предмет, чтобы продать его.', 
+            'page-upgrade': 'Выберите предмет для апгрейда.', 
+            'page-game-mines': 'Ваши предметы.', 
+            'page-games-hub': 'Нажмите на предмет, чтобы продать его.'
+        };
+        DOM.inventoryActionTextEl.textContent = actionTextMap[state.currentPage] || actionTextMap['page-cases'];
 
         if (state.currentPage === 'page-cases') renderCases();
         if (state.currentPage === 'page-upgrade') renderUpgradePage();
@@ -127,9 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const { isSlot, isInventory, inventoryIndex } = context;
         const selectedClass = isInventory && state.upgrade.selectedItem?.inventoryIndex === inventoryIndex ? 'selected' : '';
         
-        const mediaElement = item.model 
-            ? `<model-viewer src="${item.model}" ar-status="not-presenting" camera-controls auto-rotate disable-zoom class="item-model"></model-viewer>`
-            : `<img src="${item.image}" alt="${item.name}" class="item-image">`;
+        // Теперь всегда используется <img>, так как model пустой
+        const mediaElement = `<img src="${item.image}" alt="${item.name}" class="item-image" loading="lazy">`;
 
         return `<div class="item-card ${item.rarity || ''} ${selectedClass}" ${isInventory ? `data-inventory-index="${inventoryIndex}"` : ''}>
                     ${mediaElement}
@@ -141,16 +151,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function renderInventory() {
-        if (state.inventory.length === 0) { DOM.inventoryEl.innerHTML = '<p class="placeholder">Пусто... Откройте кейс!</p>'; return; }
+        if (state.inventory.length === 0) { 
+            DOM.inventoryEl.innerHTML = '<p class="placeholder">Пусто... Откройте кейс!</p>'; 
+            return; 
+        }
         DOM.inventoryEl.innerHTML = state.inventory.map((item, i) => createItemCard(item, { isInventory: true, inventoryIndex: i })).join('');
     }
 
     function renderCases() {
         if (!DOM.caseSelectionEl) return;
         DOM.caseSelectionEl.innerHTML = CASES_DB.map(c => {
-            const caseMedia = c.model
-                ? `<model-viewer src="${c.model}" camera-controls auto-rotate disable-zoom class="item-model"></model-viewer>`
-                : `<img src="${c.image}" alt="${c.name}" class="item-image">`;
+            const caseMedia = `<img src="${c.image}" alt="${c.name}" class="item-image">`;
 
             return `<div class="case-card">
                         ${caseMedia}
@@ -197,34 +208,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.body.addEventListener('click', (e) => {
-        const target = e.target;
-        const navLink = target.closest('.nav-link, .logo');
-        if (navLink) { e.preventDefault(); state.currentPage = navLink.dataset.page; resetAllGames(); render(); return; }
+        const target = e.target.closest('button, .nav-link, .logo, .game-card, .item-card[data-inventory-index], .mine-cell:not(.revealed), .modal-close-button');
+        if (!target) return;
 
-        const gameCard = target.closest('.game-card:not(.disabled)');
-        if (gameCard) { state.currentPage = gameCard.dataset.page; render(); return; }
-
-        const inventoryCard = target.closest('.item-card[data-inventory-index]');
-        if (inventoryCard) { handleInventoryClick(parseInt(inventoryCard.dataset.inventoryIndex)); return; }
-
-        if (state.currentPage === 'page-cases') {
-            const caseButton = target.closest('.control-button');
-            if(caseButton) {
-                const caseId = caseButton.dataset.caseId;
-                if(caseButton.classList.contains('open-case-btn')) handleCaseOpening(caseId);
-                else if(caseButton.classList.contains('preview-case-btn')) showCasePreview(caseId);
-            }
-        } else if (state.currentPage === 'page-upgrade') {
-            if (target.closest('.multiplier-btn')) { state.upgrade.multiplier = parseInt(target.closest('.multiplier-btn').dataset.multiplier); calculateUpgrade(); render(); }
-            if (target.id === 'upgrade-button') handleUpgrade();
-        } else if (state.currentPage === 'page-game-mines') {
-            if (target.id === 'mines-start-button') startMinesGame();
-            if (target.id === 'mines-cashout-button') cashoutMines();
-            const mineCell = target.closest('.mine-cell:not(.revealed)');
-            if (mineCell) revealMineCell(parseInt(mineCell.dataset.row), parseInt(mineCell.dataset.col));
+        if (target.matches('.nav-link, .logo')) { e.preventDefault(); state.currentPage = target.dataset.page; resetAllGames(); render(); return; }
+        if (target.matches('.game-card:not(.disabled)')) { state.currentPage = target.dataset.page; render(); return; }
+        if (target.matches('.item-card[data-inventory-index]')) { handleInventoryClick(parseInt(target.dataset.inventoryIndex)); return; }
+        
+        switch(target.dataset.caseId ? 'case-btn' : target.id) {
+            case 'case-btn':
+                const caseId = target.dataset.caseId;
+                if(target.classList.contains('open-case-btn')) handleCaseOpening(caseId);
+                else if(target.classList.contains('preview-case-btn')) showCasePreview(caseId);
+                break;
+            case 'upgrade-button': handleUpgrade(); break;
+            case 'mines-start-button': startMinesGame(); break;
+            case 'mines-cashout-button': cashoutMines(); break;
         }
+
+        if (target.matches('.multiplier-btn')) { state.upgrade.multiplier = parseInt(target.dataset.multiplier); calculateUpgrade(); render(); }
+        if (target.matches('.mine-cell')) { revealMineCell(parseInt(target.dataset.row), parseInt(target.dataset.col)); }
+        if (target.matches('.modal-close-button')) { DOM.modal.style.display = "none"; }
     });
-    DOM.modalCloseBtn.onclick = () => DOM.modal.style.display = "none";
+    
     window.onclick = (e) => { if (e.target == DOM.modal) DOM.modal.style.display = "none"; }
 
     function handleInventoryClick(index) {
@@ -250,22 +256,28 @@ document.addEventListener('DOMContentLoaded', () => {
         state.isSpinning = true; state.balance -= selectedCase.price; render();
         
         const wonItem = selectedCase.contains[Math.floor(Math.random() * selectedCase.contains.length)];
-        let rouletteItems = Array(100).fill().map(() => selectedCase.contains[Math.floor(Math.random() * selectedCase.contains.length)]);
-        rouletteItems[95] = wonItem;
+        let rouletteItems = Array(50).fill(0).map(() => selectedCase.contains[Math.floor(Math.random() * selectedCase.contains.length)]);
+        rouletteItems[45] = wonItem; // Приз будет ближе к концу
 
-        DOM.rouletteEl.style.transition = 'none'; DOM.rouletteEl.style.transform = 'translateX(0)';
+        DOM.rouletteEl.style.transition = 'none'; 
+        DOM.rouletteEl.style.transform = 'translateX(0)';
         DOM.rouletteEl.innerHTML = rouletteItems.map(item => createItemCard(item)).join('');
         DOM.resultItemEl.innerHTML = '<p class="placeholder">Открываем...</p>';
 
         setTimeout(() => {
-            DOM.rouletteEl.style.transition = 'transform 7s cubic-bezier(0.1, 0.1, 0.1, 1)';
-            const stopPosition = (95 * 150) - (DOM.rouletteEl.parentElement.offsetWidth / 2) + 75;
+            DOM.rouletteEl.style.transition = 'transform 7s cubic-bezier(0.1, 0, 0.1, 1)';
+            // Ширина одной карточки = 110px
+            const stopPosition = (45 * 110) - (DOM.rouletteEl.parentElement.offsetWidth / 2) + (110 / 2);
             DOM.rouletteEl.style.transform = `translateX(-${stopPosition}px)`;
         }, 100);
 
         setTimeout(() => {
-            state.isSpinning = false; state.inventory.push(wonItem); showToast(`Выпал ${wonItem.name}!`, wonItem.rarity);
-            DOM.resultItemEl.innerHTML = createItemCard(wonItem); saveState(); render();
+            state.isSpinning = false; 
+            state.inventory.push(wonItem); 
+            showToast(`Выпал ${wonItem.name}!`, wonItem.rarity);
+            DOM.resultItemEl.innerHTML = createItemCard(wonItem); 
+            saveState(); 
+            render();
         }, 7100);
     }
     
@@ -291,16 +303,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const { item, inventoryIndex } = state.upgrade.selectedItem;
         const isSuccess = Math.random() * 100 < state.upgrade.chance;
-        const successAngle = (state.upgrade.chance / 100) * 360;
-        
-        const randomOffset = Math.random() * (successAngle - 10) + 5;
-        const failAngle = 360 - successAngle;
-        const randomFailOffset = Math.random() * (failAngle - 10) + 5;
-        const finalRotation = isSuccess ? randomOffset : successAngle + randomFailOffset;
-        const totalRotation = 360 * 5 + finalRotation;
+        const finalRotation = 360 * 5 + (isSuccess ? (Math.random() * ((state.upgrade.chance/100)*360 - 20) + 10) : ((state.upgrade.chance/100)*360 + (Math.random() * (360-((state.upgrade.chance/100)*360) - 20) + 10)));
 
         DOM.upgradeWheel.style.transition = 'transform 5s cubic-bezier(0.2, 0.8, 0.2, 1)';
-        DOM.upgradeWheel.style.transform = `rotate(${totalRotation}deg)`;
+        DOM.upgradeWheel.style.transform = `rotate(${finalRotation}deg)`;
         
         state.inventory.splice(inventoryIndex, 1);
         
@@ -373,7 +379,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { DOM.toastEl.classList.remove('show'); }, 3000);
     }
     
-    function resetAllGames() { state.upgrade = { ...defaultState.upgrade }; state.mines.isActive = false; }
+    function resetAllGames() { 
+        state.upgrade = { ...defaultState.upgrade }; 
+        state.mines.isActive = false; 
+    }
     
     loadState();
     render();

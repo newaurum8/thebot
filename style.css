@@ -1,123 +1,122 @@
 /* --- Основные стили и переменные --- */
 :root {
     --common-color: #9db3ce; --rare-color: #4a69ff; --epic-color: #d32ce6;
-    --legendary-color: #eb4b4b; --gold-color: #ffd700; --bg-main: #191c24;
-    --bg-secondary: #20242e; --text-primary: #e1e3e8; --text-secondary: #8a92a5;
+    --legendary-color: #eb4b4b; --gold-color: #ffd700;
+    /* Адаптивные цвета под тему Telegram */
+    --bg-main: var(--tg-theme-bg-color, #191c24);
+    --bg-secondary: var(--tg-theme-secondary-bg-color, #20242e);
+    --text-primary: var(--tg-theme-text-color, #e1e3e8);
+    --text-secondary: var(--tg-theme-hint-color, #8a92a5);
     --accent: #ff4757; --success: #2ed573; --fail: #ff4757;
 }
 * { box-sizing: border-box; }
-body {
-    font-family: 'Teko', sans-serif; background-color: var(--bg-main);
-    color: var(--text-primary); margin: 0; padding-top: 70px;
-    font-size: 1.1rem; letter-spacing: 0.5px;
+html {
+    scroll-behavior: smooth;
 }
-h2 { text-align: center; font-size: 2.5rem; margin-bottom: 20px; font-weight: 500; }
-.separator { border: none; height: 2px; background: linear-gradient(90deg, transparent, var(--bg-secondary), transparent); margin: 40px 0; }
-.placeholder { color: var(--text-secondary); text-align: center; align-self: center; font-size: 1.2rem; }
+body {
+    font-family: 'Teko', sans-serif; 
+    background-color: var(--bg-main);
+    color: var(--text-primary); 
+    margin: 0; 
+    padding: 60px 0 15px 0; /* Верхний отступ под шапку, нижний для красоты */
+    font-size: 1rem; /* Уменьшаем базовый шрифт */
+    letter-spacing: 0.5px;
+    user-select: none; 
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none; /* Убираем "оттягивание" страницы на iOS */
+}
+h2 { text-align: center; font-size: 1.8rem; margin: 15px 0; font-weight: 500; }
+.separator { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--bg-secondary), transparent); margin: 20px 0; }
+.placeholder { color: var(--text-secondary); text-align: center; align-self: center; font-size: 1rem; padding: 20px 0; }
 
 /* --- Шапка сайта --- */
-.site-header { position: fixed; top: 0; left: 0; width: 100%; background-color: var(--bg-secondary); display: flex; align-items: center; padding: 0 2%; height: 70px; box-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 1000; }
-.logo { font-size: 2.2rem; font-weight: 700; color: white; margin-right: 40px; cursor: pointer; }
-.navigation { display: flex; gap: 20px; }
-.nav-link { color: var(--text-secondary); text-decoration: none; font-size: 1.6rem; font-weight: 500; padding: 0 10px; transition: color 0.3s; cursor: pointer;}
+.site-header { position: fixed; top: 0; left: 0; width: 100%; background-color: var(--bg-secondary); display: flex; align-items: center; padding: 0 10px; height: 60px; box-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 1000; }
+.logo { font-size: 1.6rem; font-weight: 700; color: white; margin-right: 15px; cursor: pointer; }
+.navigation { display: flex; gap: 10px; }
+.nav-link { color: var(--text-secondary); text-decoration: none; font-size: 1.2rem; font-weight: 500; padding: 5px; transition: color 0.3s; cursor: pointer;}
 .nav-link.active, .nav-link:hover { color: white; }
-.balance { margin-left: auto; font-size: 2rem; font-weight: 700; background-color: rgba(0,0,0,0.2); padding: 5px 20px; border-radius: 5px; }
+.balance { margin-left: auto; font-size: 1.3rem; font-weight: 700; background-color: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 5px; white-space: nowrap; }
 .currency-icon { color: var(--gold-color); }
 
 /* --- Управление страницами --- */
 .page { display: none; }
-.page.active { display: block; animation: fadeIn 0.5s; }
+.page.active { display: block; animation: fadeIn 0.4s; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.page-container, .inventory-section { width: 95%; max-width: 1200px; margin: 20px auto; background-color: var(--bg-secondary); padding: 25px; border-radius: 15px; }
+.page-container, .inventory-section { width: 96%; max-width: 500px; margin: 15px auto; background-color: var(--bg-secondary); padding: 10px; border-radius: 15px; }
 
 /* --- Хаб с играми --- */
-.games-hub { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-.game-card { background-color: var(--bg-main); border-radius: 10px; padding: 30px; text-align: center; cursor: pointer; transition: transform 0.2s; border: 1px solid transparent; }
-.game-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-.game-card h3 { font-size: 2rem; margin: 0 0 10px; font-weight: 500; pointer-events: none; }
-.game-card p { font-size: 1.2rem; color: var(--text-secondary); margin: 0; pointer-events: none; }
-.game-card.disabled { cursor: not-allowed; color: #666; background: #222; }
+.games-hub { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.game-card { background-color: var(--bg-main); border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.2s, border-color 0.2s; border: 1px solid transparent; }
+.game-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+.game-card h3 { font-size: 1.5rem; margin: 0 0 5px; font-weight: 500; pointer-events: none; }
+.game-card p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; pointer-events: none; }
+.game-card.disabled { cursor: not-allowed; opacity: 0.6; }
 .game-card.disabled:hover { transform: none; border-color: transparent; }
 
 /* --- Кейсы и Рулетка --- */
-.case-selection-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-.case-card { display: flex; flex-direction: column; background-color: var(--bg-main); border-radius: 10px; padding: 15px; text-align: center; width: 200px;}
-.case-card h3 { font-size: 1.8rem; margin: 10px 0 5px 0; font-weight: 500; }
-.case-card .price { font-weight: 700; color: var(--gold-color); font-size: 1.5rem; }
-.roulette-wrapper { position: relative; width: 100%; height: 160px; background: var(--bg-main); border-radius: 10px; overflow: hidden; margin: 20px 0; }
-.roulette-pointer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 4px; height: 100%; background: var(--gold-color); z-index: 10; box-shadow: 0 0 15px var(--gold-color); }
+.case-selection-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.case-card { display: flex; flex-direction: column; align-items: center; background-color: var(--bg-main); border-radius: 10px; padding: 10px; text-align: center; }
+.case-card h3 { font-size: 1.2rem; margin: 8px 0 4px 0; font-weight: 500; }
+.case-card .price { font-weight: 700; color: var(--gold-color); font-size: 1.1rem; }
+.case-buttons { display: flex; gap: 5px; margin-top: 5px; }
+.case-card .control-button { font-size: 1rem; padding: 5px 10px; }
+.roulette-wrapper { position: relative; width: 100%; height: 120px; /* УМЕНЬШИЛИ ВЫСОТУ */ background: var(--bg-main); border-radius: 10px; overflow: hidden; margin: 20px 0; touch-action: pan-y; }
+.roulette-pointer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 3px; height: 100%; background: var(--gold-color); z-index: 10; box-shadow: 0 0 10px var(--gold-color); }
 .roulette { display: flex; height: 100%; transition: transform 7s cubic-bezier(0.1, 0.1, 0.1, 1); }
-.result-item-display { min-height: 190px; }
+.result-item-display { min-height: 150px; display: flex; align-items: center; justify-content: center; }
 
-/* --- Карточки предметов --- */
-.item-card { width: 150px; min-width: 150px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; box-sizing: border-box; padding: 10px; background-position: center; background-size: cover; text-align: center; position: relative; }
+/* --- Карточки предметов (ВАЖНО ДЛЯ РУЛЕТКИ) --- */
+.item-card { width: 110px; min-width: 110px; /* УМЕНЬШИЛИ ШИРИНУ */ height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 5px; background-position: center; background-size: cover; text-align: center; position: relative; }
 .item-card::before { content: ''; position: absolute; top:0; left:0; right: 0; bottom: 0; background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9) 100%); z-index: 1; }
 .item-card > * { z-index: 2; }
-.inventory-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding-top: 10px; }
-.inventory-container .item-card { height: 190px; border-radius: 10px; border: 1px solid var(--bg-main); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-.inventory-container .item-card:hover { transform: translateY(-5px); box-shadow: 0 5px 20px rgba(0,0,0,0.4); }
+.item-model, .item-image { display: block; width: 80px; height: 80px; /* УМЕНЬШИЛИ РАЗМЕР КАРТИНКИ */ object-fit: contain; margin-bottom: 5px; }
+.case-card .item-image { width: 100%; height: 100px; object-fit: contain; }
+.item-info { background: rgba(0,0,0,0.4); padding: 4px; border-radius: 5px; width: 100%; }
+.item-name { font-size: 0.9rem; font-weight: 500; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.item-price { font-size: 1rem; color: var(--gold-color); font-weight: 700; margin: 0; }
+.inventory-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; padding-top: 10px; }
+.inventory-container .item-card { height: 140px; border: 1px solid var(--bg-main); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.inventory-container .item-card:hover { transform: translateY(-3px); box-shadow: 0 3px 10px rgba(0,0,0,0.4); }
 .inventory-container .item-card.selected { border-color: var(--gold-color); box-shadow: 0 0 15px var(--gold-color); }
-/* --- ИСПРАВЛЕНИЕ ЗДЕСЬ --- */
-.item-model, .item-image {
-    display: block; /* Сделали элемент блочным */
-    width: 120px;
-    height: 120px;
-    object-fit: contain;
-    margin-bottom: 5px;
-}
-.case-card .item-model, .case-card .item-image { width: 150px; height: 120px;}
-.item-info { background: rgba(0,0,0,0.3); padding: 5px; border-radius: 5px; width: 100%; }
-.item-name { font-size: 1.2rem; font-weight: 500; margin: 0; }
-.item-price { font-size: 1.3rem; color: var(--gold-color); font-weight: 700; margin: 0; }
+
+/* Цвета редкости */
 .item-card.common { background-image: radial-gradient(circle, var(--common-color) 0%, var(--bg-main) 70%); }
 .item-card.rare { background-image: radial-gradient(circle, var(--rare-color) 0%, var(--bg-main) 70%); }
 .item-card.epic { background-image: radial-gradient(circle, var(--epic-color) 0%, var(--bg-main) 70%); }
 .item-card.legendary { background-image: radial-gradient(circle, var(--legendary-color) 0%, var(--bg-main) 70%); }
 
 /* --- Страница Апгрейда --- */
-.upgrade-container { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-.upgrade-box { flex: 1; text-align: center; }
-.upgrade-slot { width: 100%; height: 250px; background-color: var(--bg-main); border-radius: 10px; display: flex; justify-content: center; align-items: center; padding: 20px; }
+.upgrade-container { display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 15px; }
+.upgrade-box { width: 100%; text-align: center; }
+.upgrade-slot { width: 100%; max-width: 200px; height: 180px; background-color: var(--bg-main); border-radius: 10px; display: flex; justify-content: center; align-items: center; padding: 10px; margin: 0 auto; }
 .upgrade-slot .item-card { width: 100%; height: 100%; }
-.upgrade-controls { text-align: center; }
-.upgrade-wheel-container { position: relative; width: 200px; height: 200px; margin: 0 auto 20px; }
-.upgrade-wheel-pointer { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid var(--gold-color); z-index: 2;}
-.upgrade-wheel { width: 100%; height: 100%; border-radius: 50%; background-color: var(--fail); background-image: conic-gradient(var(--success) 0deg, var(--fail) 0deg); border: 5px solid var(--bg-main); transition: transform 5s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.chance-display { font-size: 2rem; font-weight: 700; }
-.control-button { padding: 15px; border: none; border-radius: 10px; font-size: 1.8rem; font-family: 'Teko', sans-serif; cursor: pointer; font-weight: 700; transition: all 0.2s; }
-#upgrade-button { background-color: var(--gold-color); color: var(--bg-main); width: 180px; margin-top: 10px;}
+.upgrade-controls { text-align: center; margin: 15px 0; }
+.upgrade-wheel-container { position: relative; width: 150px; height: 150px; margin: 0 auto 10px; }
+.upgrade-wheel-pointer { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 18px solid var(--gold-color); z-index: 2;}
+.upgrade-wheel { width: 100%; height: 100%; border-radius: 50%; background-color: var(--fail); background-image: conic-gradient(var(--success) 0deg, var(--fail) 0deg); border: 4px solid var(--bg-main); transition: transform 5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.chance-display { font-size: 1.6rem; font-weight: 700; }
+.control-button { padding: 10px 15px; border: none; border-radius: 10px; font-size: 1.3rem; font-family: 'Teko', sans-serif; cursor: pointer; font-weight: 700; transition: all 0.2s; }
+#upgrade-button { width: 150px; margin-top: 10px;}
 #upgrade-button:disabled, .control-button:disabled { background-color: #555; color: #888; cursor: not-allowed; }
-.multipliers { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
-.multiplier-btn { width: 50px; height: 50px; border: 2px solid var(--text-secondary); background: none; color: var(--text-secondary); font-size: 1.5rem; border-radius: 5px; cursor: pointer; }
+.multipliers { display: flex; gap: 8px; margin-top: 15px; justify-content: center; }
+.multiplier-btn { width: 40px; height: 40px; border: 2px solid var(--text-secondary); background: none; color: var(--text-secondary); font-size: 1.2rem; border-radius: 5px; cursor: pointer; }
 .multiplier-btn.active { border-color: var(--gold-color); color: var(--gold-color); }
 
 /* --- Страница Минёра --- */
-.game-instance-container { display: flex; flex-wrap: wrap; gap: 30px; }
-.game-controls-panel { flex: 1; min-width: 250px;}
-.game-field { flex: 2; min-width: 300px; }
-.control-group { margin-bottom: 20px; }
-.control-group label { display: block; font-size: 1.3rem; color: var(--text-secondary); margin-bottom: 5px; }
-.control-group input { width: 100%; padding: 10px; background: var(--bg-main); border: 1px solid #444; color: white; font-family: 'Teko', sans-serif; font-size: 1.5rem; border-radius: 5px; }
-#mines-start-button { width: 100%; }
-.mines-info { margin-top: 30px; background: var(--bg-main); padding: 15px; border-radius: 5px; }
-.mines-info h4 { margin: 0 0 10px; font-size: 1.5rem; }
-.mines-info p { margin: 5px 0; font-size: 1.3rem; }
-#mines-cashout-button { width: 100%; margin-top: 15px; background: var(--success); }
-.mines-grid.game-over .mine-cell:not(.revealed) { background-color: rgba(42, 42, 62, 0.5); }
-.mines-grid.game-over .mine-cell:not(.revealed)::after { content: '💎'; opacity: 0.5; }
-.mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr); gap: 10px; width: 100%; max-width: 500px; aspect-ratio: 1 / 1; }
-.mine-cell { background-color: var(--bg-main); border-radius: 5px; cursor: pointer; transition: background-color 0.3s, transform 0.3s; display: flex; justify-content: center; align-items: center; font-size: 2rem; }
-.mine-cell:not(.revealed):hover { background-color: #4a4a6e; }
-.mine-cell.revealed { transform: scale(0.95); }
-.mine-cell.revealed.safe { background-color: var(--success); }
-.mine-cell.revealed.mine { background-color: var(--fail); animation: shake 0.5s; }
-@keyframes shake { 0%, 100% {transform: translateX(0);} 10%, 30%, 50%, 70%, 90% {transform: translateX(-5px);} 20%, 40%, 60%, 80% {transform: translateX(5px);} }
+.game-instance-container { display: flex; flex-direction: column; gap: 20px; }
+.game-controls-panel, .game-field { width: 100%; }
+.control-group { margin-bottom: 15px; }
+.control-group label { display: block; font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 5px; }
+.control-group input { width: 100%; padding: 8px; background: var(--bg-main); border: 1px solid #444; color: white; font-family: 'Teko', sans-serif; font-size: 1.2rem; border-radius: 5px; }
+.mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; aspect-ratio: 1 / 1; margin: 0 auto; }
+.mine-cell { font-size: 1.5rem; }
 
 /* --- Модальное окно и Уведомления --- */
-.toast { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); padding: 15px 30px; border-radius: 10px; color: white; font-size: 1.5rem; z-index: 2000; visibility: hidden; opacity: 0; transition: all 0.4s; }
+.toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); padding: 10px 20px; border-radius: 10px; color: white; font-size: 1.1rem; z-index: 2000; visibility: hidden; opacity: 0; transition: all 0.4s; }
 .toast.show { visibility: visible; opacity: 1; }
 .toast.success { background-color: var(--success); }
 .toast.fail { background-color: var(--fail); }
 .modal { display: none; position: fixed; z-index: 1500; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); }
-.modal-content { background-color: var(--bg-secondary); margin: 10% auto; padding: 20px; width: 80%; max-width: 1000px; border-radius: 10px; position: relative; }
-.modal-close-button { color: #aaa; position: absolute; top: 10px; right: 25px; font-size: 38px; font-weight: bold; cursor: pointer; }
+.modal-content { background-color: var(--bg-secondary); margin: 20% auto; padding: 15px; width: 90%; max-width: 500px; border-radius: 10px; position: relative; }
+.modal-close-button { color: #aaa; position: absolute; top: 5px; right: 15px; font-size: 30px; font-weight: bold; cursor: pointer; }
