@@ -1,4 +1,4 @@
-// --- БАЗЫ ДАННЫХ (с вашими новыми названиями) ---
+// --- БАЗЫ ДАННЫХ ---
 const ITEMS_DB = {
     g22_nest: { id: 'g22_nest', name: "G22 'Nest'", rarity: 'common', price: 10, image: 'images/g22_nest.webp', model: '' },
     ump45_beast: { id: 'ump45_beast', name: "AKR Nano'", rarity: 'common', price: 12, image: 'images/akr_nano.webp', model: '' },
@@ -19,21 +19,13 @@ const ITEMS_DB = {
 };
 
 const CASES_DB = [
-    {
-        id: 'origin', name: 'Origin Case', price: 100, image: 'images/case2.webp', model: "",
-        contains: [ ITEMS_DB.g22_nest, ITEMS_DB.ump45_beast, ITEMS_DB.p350_forest, ITEMS_DB.fabm_fatal, ITEMS_DB.m60_grunge ]
-    },
-    {
-        id: 'furious', name: 'Furious Case', price: 500, image: 'images/furios.webp', model: '',
-        contains: [ ITEMS_DB.famas_monester, ITEMS_DB.m16_seaglint, ITEMS_DB.m4a1_impact, ITEMS_DB.m16_ironwill ]
-    },
-    {
-        id: 'legend', name: 'Legend Case', price: 2000, image: 'images/legend.jpg', model: '',
-        contains: [ ITEMS_DB.akr_carbon, ITEMS_DB.awp_dragon, ITEMS_DB.k_gold, ITEMS_DB.gloves_furious, ITEMS_DB.karambit_univers, ITEMS_DB.dualdaggers_retrorade, ITEMS_DB.mantis_eclips ]
-    }
+    { id: 'origin', name: 'Origin Case', price: 100, image: 'images/case2.webp', model: "", contains: [ ITEMS_DB.g22_nest, ITEMS_DB.ump45_beast, ITEMS_DB.p350_forest, ITEMS_DB.fabm_fatal, ITEMS_DB.m60_grunge ] },
+    { id: 'furious', name: 'Furious Case', price: 500, image: 'images/furios.webp', model: '', contains: [ ITEMS_DB.famas_monester, ITEMS_DB.m16_seaglint, ITEMS_DB.m4a1_impact, ITEMS_DB.m16_ironwill ] },
+    { id: 'legend', name: 'Legend Case', price: 2000, image: 'images/legend.jpg', model: '', contains: [ ITEMS_DB.akr_carbon, ITEMS_DB.awp_dragon, ITEMS_DB.k_gold, ITEMS_DB.gloves_furious, ITEMS_DB.karambit_univers, ITEMS_DB.dualdaggers_retrorade, ITEMS_DB.mantis_eclips ] }
 ];
 
-// --- ГЛАВНЫЙ СКРИПТ ПРИЛОЖЕНИЯ ---
+
+// --- ГЛАВНЫЙ СКРИПТ ---
 document.addEventListener('DOMContentLoaded', () => {
     if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.ready();
@@ -43,6 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.setProperty('--tg-theme-text-color', window.Telegram.WebApp.themeParams.text_color);
         document.body.style.setProperty('--tg-theme-hint-color', window.Telegram.WebApp.themeParams.hint_color);
     }
+    
+    // --- ЛОГИКА ДЛЯ КНОПКИ СБРОСА ---
+    document.getElementById('hard-reset-button').addEventListener('click', () => {
+        if (confirm("Вы уверены, что хотите сбросить весь прогресс? Баланс станет 10,000, а инвентарь очистится.")) {
+            localStorage.removeItem('csMoneyState');
+            location.reload();
+        }
+    });
 
     let state = {};
     const defaultState = { balance: 10000, inventory: [], currentPage: 'page-cases', isSpinning: false, upgrade: { selectedItem: null, multiplier: null, targetItem: null, chance: 0, }, mines: { isActive: false, bet: 0, minesCount: 0, grid: [], revealedCount: 0, nextMultiplier: 0, currentWin: 0 }};
@@ -190,8 +190,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleCaseOpening(caseId) {
         if (state.isSpinning) return;
         const selectedCase = CASES_DB.find(c => c.id === caseId);
-        if (state.balance < selectedCase.price) { showToast('Недостаточно средств!', 'fail'); return; }
-        state.isSpinning = true; state.balance -= selectedCase.price; render();
+
+        state.isSpinning = true;
+        // БАЛАНС НЕ ТРАТИТСЯ
+        // state.balance -= selectedCase.price; 
+        
+        render();
         
         const wonItem = selectedCase.contains[Math.floor(Math.random() * selectedCase.contains.length)];
         let rouletteItems = Array(200).fill(0).map(() => selectedCase.contains[Math.floor(Math.random() * selectedCase.contains.length)]);
@@ -204,7 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
         DOM.resultItemEl.innerHTML = '<p class="placeholder">Открываем...</p>';
 
         setTimeout(() => {
-            // *** ИЗМЕНЕНИЕ: ЕЩЕ МЕДЛЕННЕЕ ***
             DOM.rouletteEl.style.transition = 'transform 18s cubic-bezier(0.25, 0.1, 0.25, 1.0)';
             
             const itemCardWidth = 110;
@@ -219,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
             DOM.resultItemEl.innerHTML = createItemCard(wonItem); 
             saveState(); 
             render();
-        }, 18100); // 18 секунд анимации + 100мс задержка
+        }, 18100);
     }
     
     function showCasePreview(caseId) {
@@ -265,10 +268,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function startMinesGame() {
         const bet = parseInt(document.getElementById('mines-bet-amount').value);
         const minesCount = parseInt(document.getElementById('mines-count').value);
-        if (bet > state.balance) { showToast('Недостаточно средств!', 'fail'); return; }
         if (minesCount < 3 || minesCount > 24) { showToast('Кол-во мин от 3 до 24!', 'fail'); return; }
 
-        state.balance -= bet;
+        // БАЛАНС НЕ ТРАТИТСЯ
+        // state.balance -= bet;
+
         state.mines = { isActive: true, bet, minesCount, grid: [], revealedCount: 0, nextMultiplier: 0, currentWin: 0 };
         for (let r = 0; r < 5; r++) { state.mines.grid[r] = Array(5).fill().map(() => ({ revealed: false, isMine: false })); }
         let minesPlaced = 0;

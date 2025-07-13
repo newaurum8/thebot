@@ -10,21 +10,16 @@
     --accent: #ff4757; --success: #2ed573; --fail: #ff4757;
 }
 * { box-sizing: border-box; }
-html {
-    scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 body {
     font-family: 'Teko', sans-serif; 
     background-color: var(--bg-main);
     color: var(--text-primary); 
-    margin: 0; 
-    padding: 60px 0 15px 0; /* Верхний отступ под шапку, нижний для красоты */
-    font-size: 1rem; /* Уменьшаем базовый шрифт */
-    letter-spacing: 0.5px;
-    user-select: none; 
-    -webkit-user-select: none;
+    margin: 0; padding: 60px 0 15px 0;
+    font-size: 1rem; letter-spacing: 0.5px;
+    user-select: none; -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
-    overscroll-behavior-y: none; /* Убираем "оттягивание" страницы на iOS */
+    overscroll-behavior-y: none;
 }
 h2 { text-align: center; font-size: 1.8rem; margin: 15px 0; font-weight: 500; }
 .separator { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--bg-secondary), transparent); margin: 20px 0; }
@@ -45,15 +40,6 @@ h2 { text-align: center; font-size: 1.8rem; margin: 15px 0; font-weight: 500; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .page-container, .inventory-section { width: 96%; max-width: 500px; margin: 15px auto; background-color: var(--bg-secondary); padding: 10px; border-radius: 15px; }
 
-/* --- Хаб с играми --- */
-.games-hub { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-.game-card { background-color: var(--bg-main); border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.2s, border-color 0.2s; border: 1px solid transparent; }
-.game-card:hover { transform: translateY(-3px); border-color: var(--accent); }
-.game-card h3 { font-size: 1.5rem; margin: 0 0 5px; font-weight: 500; pointer-events: none; }
-.game-card p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; pointer-events: none; }
-.game-card.disabled { cursor: not-allowed; opacity: 0.6; }
-.game-card.disabled:hover { transform: none; border-color: transparent; }
-
 /* --- Кейсы и Рулетка --- */
 .case-selection-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .case-card { display: flex; flex-direction: column; align-items: center; background-color: var(--bg-main); border-radius: 10px; padding: 10px; text-align: center; }
@@ -69,64 +55,70 @@ h2 { text-align: center; font-size: 1.8rem; margin: 15px 0; font-weight: 500; }
 .item-card { width: 110px; min-width: 110px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 5px; background-position: center; background-size: cover; text-align: center; position: relative; }
 .item-card::before { content: ''; position: absolute; top:0; left:0; right: 0; bottom: 0; background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9) 100%); z-index: 1; }
 .item-card > * { z-index: 2; }
-.item-model, .item-image { display: block; width: 80px; height: 80px; object-fit: contain; margin-bottom: 5px; }
+.item-image { display: block; width: 80px; height: 80px; object-fit: contain; margin-bottom: 5px; }
 .case-card .item-image { width: 100%; height: 100px; object-fit: contain; }
 .item-info { background: rgba(0,0,0,0.4); padding: 4px; border-radius: 5px; width: 100%; }
 .item-name { font-size: 0.9rem; font-weight: 500; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 .item-price { font-size: 1rem; color: var(--gold-color); font-weight: 700; margin: 0; }
 .inventory-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; padding-top: 10px; }
-.inventory-container .item-card { height: 140px; border: 1px solid var(--bg-main); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-.inventory-container .item-card:hover { transform: translateY(-3px); box-shadow: 0 3px 10px rgba(0,0,0,0.4); }
-.inventory-container .item-card.selected { border-color: var(--gold-color); box-shadow: 0 0 15px var(--gold-color); }
-
+.inventory-container .item-card { height: 140px; border: 1px solid var(--bg-main); cursor: pointer; }
 .item-card.common { background-image: radial-gradient(circle, var(--common-color) 0%, var(--bg-main) 70%); }
 .item-card.rare { background-image: radial-gradient(circle, var(--rare-color) 0%, var(--bg-main) 70%); }
 .item-card.epic { background-image: radial-gradient(circle, var(--epic-color) 0%, var(--bg-main) 70%); }
 .item-card.legendary { background-image: radial-gradient(circle, var(--legendary-color) 0%, var(--bg-main) 70%); }
 
-/* --- Страница Апгрейда --- */
-.upgrade-container { display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 15px; }
-.upgrade-box { width: 100%; text-align: center; }
-.upgrade-slot { width: 100%; max-width: 200px; height: 180px; background-color: var(--bg-main); border-radius: 10px; display: flex; justify-content: center; align-items: center; padding: 10px; margin: 0 auto; }
-.upgrade-slot .item-card { width: 100%; height: 100%; }
-.upgrade-controls { text-align: center; margin: 15px 0; }
-.upgrade-wheel-container { position: relative; width: 150px; height: 150px; margin: 0 auto 10px; }
-.upgrade-wheel-pointer { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 18px solid var(--gold-color); z-index: 2;}
-.upgrade-wheel { width: 100%; height: 100%; border-radius: 50%; background-color: var(--fail); background-image: conic-gradient(var(--success) 0deg, var(--fail) 0deg); border: 4px solid var(--bg-main); }
-
 /* --- Страница Минёра --- */
 .game-instance-container { display: flex; flex-direction: column; gap: 20px; }
-.game-controls-panel, .game-field { width: 100%; }
-.control-group { margin-bottom: 15px; }
-.control-group label { display: block; font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 5px; }
-.control-group input { width: 100%; padding: 8px; background: var(--bg-main); border: 1px solid #444; color: white; font-family: 'Teko', sans-serif; font-size: 1.2rem; border-radius: 5px; }
 .mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; aspect-ratio: 1 / 1; margin: 0 auto; }
-/* ИСПРАВЛЕНИЕ ЦВЕТА ФОНА В МИНЕРЕ */
 .mine-cell { 
     font-size: 1.5rem; 
     background-color: #2a2a3e; /* Явный цвет, чтобы отличаться от фона */
     border-radius: 5px; 
     cursor: pointer; 
-    transition: background-color 0.3s, transform 0.3s; 
+    transition: background-color 0.3s; 
     display: flex; 
     justify-content: center; 
     align-items: center;
 }
 .mine-cell:not(.revealed):hover { background-color: #4a4a6e; }
 .mine-cell.revealed.safe { background-color: var(--success); }
-.mine-cell.revealed.mine { background-color: var(--fail); animation: shake 0.5s; }
-@keyframes shake { 0%, 100% {transform: translateX(0);} 10%, 30%, 50%, 70%, 90% {transform: translateX(-5px);} 20%, 40%, 60%, 80% {transform: translateX(5px);} }
+.mine-cell.revealed.mine { background-color: var(--fail); }
 
+/* --- Стили для новой кнопки сброса --- */
+.footer-controls {
+    text-align: center;
+    margin: 20px 10px;
+}
+#hard-reset-button {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-family: 'Teko', sans-serif;
+    font-size: 1.1rem;
+    cursor: pointer;
+    opacity: 0.8;
+}
 
-/* --- Общие кнопки и контролы --- */
+/* ... остальные стили ... */
+.game-card.disabled, .control-button:disabled { cursor: not-allowed; opacity: 0.6; }
 .control-button { padding: 10px 15px; border: none; border-radius: 10px; font-size: 1.3rem; font-family: 'Teko', sans-serif; cursor: pointer; font-weight: 700; transition: all 0.2s; }
+.upgrade-container { display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 15px; }
+.upgrade-box { width: 100%; text-align: center; }
+.upgrade-slot { width: 100%; max-width: 200px; height: 180px; background-color: var(--bg-main); border-radius: 10px; display: flex; justify-content: center; align-items: center; padding: 10px; margin: 0 auto; }
+.upgrade-controls { text-align: center; margin: 15px 0; }
+.upgrade-wheel-container { position: relative; width: 150px; height: 150px; margin: 0 auto 10px; }
+.upgrade-wheel-pointer { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 18px solid var(--gold-color); z-index: 2;}
+.upgrade-wheel { width: 100%; height: 100%; border-radius: 50%; background-color: var(--fail); background-image: conic-gradient(var(--success) 0deg, var(--fail) 0deg); border: 4px solid var(--bg-main); }
+.game-controls-panel, .game-field { width: 100%; }
+.control-group { margin-bottom: 15px; }
+.control-group label { display: block; font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 5px; }
+.control-group input { width: 100%; padding: 8px; background: var(--bg-main); border: 1px solid #444; color: white; font-family: 'Teko', sans-serif; font-size: 1.2rem; border-radius: 5px; }
 #upgrade-button { width: 150px; margin-top: 10px;}
-#upgrade-button:disabled, .control-button:disabled { background-color: #555; color: #888; cursor: not-allowed; }
 .multipliers { display: flex; gap: 8px; margin-top: 15px; justify-content: center; }
 .multiplier-btn { width: 40px; height: 40px; border: 2px solid var(--text-secondary); background: none; color: var(--text-secondary); font-size: 1.2rem; border-radius: 5px; cursor: pointer; }
 .multiplier-btn.active { border-color: var(--gold-color); color: var(--gold-color); }
-
-/* --- Модальное окно и Уведомления --- */
 .toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); padding: 10px 20px; border-radius: 10px; color: white; font-size: 1.1rem; z-index: 2000; visibility: hidden; opacity: 0; transition: all 0.4s; }
 .toast.show { visibility: visible; opacity: 1; }
 .modal { display: none; position: fixed; z-index: 1500; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); }
