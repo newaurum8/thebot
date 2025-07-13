@@ -25,7 +25,6 @@ const CASES_DB = [
 ];
 
 
-// --- ГЛАВНЫЙ СКРИПТ ---
 document.addEventListener('DOMContentLoaded', () => {
     if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.ready();
@@ -36,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.setProperty('--tg-theme-hint-color', window.Telegram.WebApp.themeParams.hint_color);
     }
     
-    // --- ЛОГИКА ДЛЯ КНОПКИ СБРОСА ---
     document.getElementById('hard-reset-button').addEventListener('click', () => {
         if (confirm("Вы уверены, что хотите сбросить весь прогресс? Баланс станет 10,000, а инвентарь очистится.")) {
             localStorage.removeItem('csMoneyState');
@@ -83,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createItemCard(item, context = {}) {
-        const { isSlot, isInventory, inventoryIndex } = context;
+        const { isInventory, inventoryIndex } = context;
         const selectedClass = isInventory && state.upgrade.selectedItem?.inventoryIndex === inventoryIndex ? 'selected' : '';
         const mediaElement = `<img src="${item.image}" alt="${item.name}" class="item-image" loading="lazy">`;
         return `<div class="item-card ${item.rarity || ''} ${selectedClass}" ${isInventory ? `data-inventory-index="${inventoryIndex}"` : ''}>
@@ -189,17 +187,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleCaseOpening(caseId) {
         if (state.isSpinning) return;
-        const selectedCase = CASES_DB.find(c => c.id === caseId);
-
         state.isSpinning = true;
         // БАЛАНС НЕ ТРАТИТСЯ
-        // state.balance -= selectedCase.price; 
-        
         render();
-        
+        const selectedCase = CASES_DB.find(c => c.id === caseId);
         const wonItem = selectedCase.contains[Math.floor(Math.random() * selectedCase.contains.length)];
-        let rouletteItems = Array(200).fill(0).map(() => selectedCase.contains[Math.floor(Math.random() * selectedCase.contains.length)]);
-        const winning_index = 190;
+        
+        // *** ИЗМЕНЕНИЕ ЗДЕСЬ: УМЕНЬШИЛИ КОЛИЧЕСТВО ПРЕДМЕТОВ ***
+        // Чем меньше предметов, тем медленнее они будут пролетать за то же время
+        let rouletteItems = Array(60).fill(0).map(() => selectedCase.contains[Math.floor(Math.random() * selectedCase.contains.length)]);
+        const winning_index = 50; // Ставим приз ближе к концу
         rouletteItems[winning_index] = wonItem;
 
         DOM.rouletteEl.style.transition = 'none'; 
@@ -208,7 +205,8 @@ document.addEventListener('DOMContentLoaded', () => {
         DOM.resultItemEl.innerHTML = '<p class="placeholder">Открываем...</p>';
 
         setTimeout(() => {
-            DOM.rouletteEl.style.transition = 'transform 18s cubic-bezier(0.25, 0.1, 0.25, 1.0)';
+            // Длительность остается 8 секунд
+            DOM.rouletteEl.style.transition = 'transform 8s cubic-bezier(0.25, 0.1, 0.25, 1.0)';
             
             const itemCardWidth = 110;
             const stopPosition = (winning_index * itemCardWidth) - (DOM.rouletteEl.parentElement.offsetWidth / 2) + (itemCardWidth / 2);
@@ -222,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
             DOM.resultItemEl.innerHTML = createItemCard(wonItem); 
             saveState(); 
             render();
-        }, 18100);
+        }, 8100); // 8 секунд анимации + 100мс задержка
     }
     
     function showCasePreview(caseId) {
@@ -269,9 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const bet = parseInt(document.getElementById('mines-bet-amount').value);
         const minesCount = parseInt(document.getElementById('mines-count').value);
         if (minesCount < 3 || minesCount > 24) { showToast('Кол-во мин от 3 до 24!', 'fail'); return; }
-
-        // БАЛАНС НЕ ТРАТИТСЯ
-        // state.balance -= bet;
 
         state.mines = { isActive: true, bet, minesCount, grid: [], revealedCount: 0, nextMultiplier: 0, currentWin: 0 };
         for (let r = 0; r < 5; r++) { state.mines.grid[r] = Array(5).fill().map(() => ({ revealed: false, isMine: false })); }
